@@ -10,7 +10,7 @@ services:
       CF_BEST_API_HASH: ${param_cf_best_api_hash}
       CF_BEST_SESSION: /home/app/data/session
     volumes:
-      - ${param_docker_data}/cf-best/data/:/home/app/data/
+      - ${param_docker_data}/cf-best-scaner/data/:/home/app/data/
     restart: always
 
 networks:
