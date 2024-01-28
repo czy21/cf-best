@@ -9,3 +9,5 @@ out/
 
 # Script #
 __pycache__/
+
+*.session
