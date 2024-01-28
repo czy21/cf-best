@@ -21,7 +21,7 @@ if __name__ == '__main__':
     client = TelegramClient(session=telethon_session, api_id=api_id, api_hash=api_hash).start()
 
 
-    @client.on(events.NewMessage(chats="@cf_best_test"))
+    @client.on(events.NewMessage(chats="@cf_push"))
     async def handler(event):
         message_date = event.date.replace(tzinfo=pytz.utc).astimezone(pytz.timezone("Asia/Shanghai"))
         if event.message.file is not None and event.message.file.ext == ".txt":
