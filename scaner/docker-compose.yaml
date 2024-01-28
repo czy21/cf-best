@@ -1,0 +1,19 @@
+version: "3.9"
+
+services:
+  app:
+    image: ${param_registry_repo}/library/${param_release_name}:${param_release_version}
+    pull_policy: always
+    container_name: ${param_release_name}
+    environment:
+      CF_BEST_API_ID: ${param_cf_best_api_id}
+      CF_BEST_API_HASH: ${param_cf_best_api_hash}
+      CF_BEST_SESSION: /home/app/data/session
+    volumes:
+      - ${param_docker_data}/cf-best/data/:/home/app/data/
+    restart: always
+
+networks:
+  default:
+    name: local
+    external: true
