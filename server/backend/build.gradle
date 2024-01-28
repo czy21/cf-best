@@ -31,8 +31,8 @@ test {
 dependencies {
     api "org.projectlombok:lombok"
     annotationProcessor "org.projectlombok:lombok"
-    api ('com.sunny:sunny-framework-web'){
-        exclude group: 'com.alibaba.cloud',module:'spring-cloud-starter-alibaba-nacos-config'
-        exclude group: 'com.alibaba.cloud',module:'spring-cloud-starter-alibaba-nacos-discovery'
+    api('com.sunny:sunny-framework-web') {
+        exclude group: 'com.alibaba.cloud', module: 'spring-cloud-starter-alibaba-nacos-config'
+        exclude group: 'com.alibaba.cloud', module: 'spring-cloud-starter-alibaba-nacos-discovery'
     }
 }
