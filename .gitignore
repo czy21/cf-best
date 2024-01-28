@@ -1,13 +1,21 @@
 # Idea #
 .idea
-*.iws
+log/
 *.iml
-*.ipr
-out/
-!**/src/main/**/out/
-!**/src/test/**/out/
+*.log
 
-# Script #
+# Gradle #
+.gradle/
+
+# Build #
+target/
+build/
+
+# Web #
+node_modules/
+dist/
+yarn.lock
+
+# Python #
 __pycache__/
-
 *.session

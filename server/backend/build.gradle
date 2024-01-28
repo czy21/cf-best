@@ -1,0 +1,38 @@
+plugins {
+    id 'java-library'
+    id 'org.springframework.boot'
+}
+
+apply plugin: 'io.spring.dependency-management'
+
+group = 'com.cfbest'
+version = '0.1.0-SNAPSHOT'
+
+sourceCompatibility = JavaVersion.VERSION_17
+targetCompatibility = JavaVersion.VERSION_17
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+    options.compilerArgs.add("-parameters")
+}
+
+dependencyManagement {
+    generatedPomCustomization {
+        enabled = false
+    }
+    imports {
+        mavenBom "com.sunny:sunny-framework-bom:3.0.0-SNAPSHOT"
+    }
+}
+
+test {
+    useJUnitPlatform()
+}
+dependencies {
+    api "org.projectlombok:lombok"
+    annotationProcessor "org.projectlombok:lombok"
+    api ('com.sunny:sunny-framework-web'){
+        exclude group: 'com.alibaba.cloud',module:'spring-cloud-starter-alibaba-nacos-config'
+        exclude group: 'com.alibaba.cloud',module:'spring-cloud-starter-alibaba-nacos-discovery'
+    }
+}
