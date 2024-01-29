@@ -13,7 +13,7 @@
          and ci.region is null
      </where>
    </select>
-    <update id="updateByValueStrAndNoRegion" parameterType="generator.domain.CfCdnIp">
+    <update id="updateByValueStrAndNoRegion" parameterType="com.cfbest.server.model.po.CFCDNIPPO">
         update cf_cdn_ip
         <set>
             <if test="valueStr != null">
@@ -52,4 +52,13 @@
         </set>
         where value_str = #{valueStr} and region is null
     </update>
+
+    <insert id="copyToView">
+        INSERT INTO cf_cdn_ip_view (value_str, `type`, country, country_code, region, region_name, city, isp, telegram_message_id)
+        select
+            ci.value_str, ci.`type`, ci.country, ci.country_code, ci.region, ci.region_name, ci.city, ci.isp, ci.telegram_message_id
+        from cf_cdn_ip ci
+        inner join telegram_message tm on tm.id = ci.telegram_message_id
+        where tm.message_time between #{timeInterval[0]} and #{timeInterval[1]}
+    </insert>
 </mapper>

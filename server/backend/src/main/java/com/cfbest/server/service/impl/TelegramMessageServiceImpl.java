@@ -41,7 +41,11 @@ public class TelegramMessageServiceImpl implements TelegramMessageService {
                 m.setStatus(TelegramMessageStatusKind.PROCESSED.getValue());
                 telegramMessageMapper.updateStatus(m.getId(), m.getStatus());
             }
-
+        }
+        boolean allProcessed = messages.stream().allMatch(t -> TelegramMessageStatusKind.PROCESSED.getValue().equals(t.getStatus()));
+        boolean isLatest = messages.stream().anyMatch(TelegramMessagePO::getIsLatest);
+        if (allProcessed && isLatest) {
+            cfcdnipService.copyToView(messageTimeInterval);
         }
     }
 }

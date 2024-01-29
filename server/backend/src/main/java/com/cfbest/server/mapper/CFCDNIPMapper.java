@@ -4,7 +4,11 @@ import com.cfbest.server.model.po.CFCDNIPPO;
 import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 import org.apache.ibatis.cursor.Cursor;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * @author chenzhaoyu
@@ -20,6 +24,14 @@ public interface CFCDNIPMapper {
     CFCDNIPPO selectOneByValueStrAndHaveRegion(@Param("valueStr") String valueStr);
 
     void updateByValueStrAndNoRegion(CFCDNIPPO entity);
+
+    void copyToView(@Param("timeInterval") List<LocalDateTime> timeInterval);
+
+    @Update("truncate table cf_cdn_ip_view")
+    void truncateView();
+
+    @Select("select max(create_time) from cf_cdn_ip_view")
+    LocalDateTime selectViewMaxTime();
 }
 
 

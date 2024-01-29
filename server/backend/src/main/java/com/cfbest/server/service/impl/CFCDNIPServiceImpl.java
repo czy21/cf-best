@@ -13,6 +13,7 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -26,23 +27,25 @@ public class CFCDNIPServiceImpl implements CFCDNIPService {
     SqlSessionFactory sqlSessionFactory;
     @Autowired
     IpApiFeign ipApiFeign;
+    @Autowired
+    CFCDNIPMapper cfcdnipMapper;
 
     @Override
     public void populateRegion(Long telegramMessageId) {
         List<CFCDNIPPO> records = new ArrayList<>();
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            CFCDNIPMapper cfcdnipMapper = sqlSession.getMapper(CFCDNIPMapper.class);
-            Cursor<CFCDNIPPO> cursor = cfcdnipMapper.selectCursorByTelegramMessageId(telegramMessageId);
+            CFCDNIPMapper cfcdnipMapperInternal = sqlSession.getMapper(CFCDNIPMapper.class);
+            Cursor<CFCDNIPPO> cursor = cfcdnipMapperInternal.selectCursorByTelegramMessageId(telegramMessageId);
             for (CFCDNIPPO t : cursor) {
                 records.add(t);
                 if (records.size() >= 50) {
-                    updateRegion(records, cfcdnipMapper);
+                    updateRegion(records, cfcdnipMapperInternal);
                     sqlSession.commit();
                     records.clear();
                 }
             }
             if (records.size() > 0) {
-                updateRegion(records, cfcdnipMapper);
+                updateRegion(records, cfcdnipMapperInternal);
                 sqlSession.commit();
             }
         } catch (Exception e) {
@@ -50,11 +53,20 @@ public class CFCDNIPServiceImpl implements CFCDNIPService {
         }
     }
 
-    private void updateRegion(List<CFCDNIPPO> records, CFCDNIPMapper cfcdnipMapper) {
+    @Override
+    public void copyToView(List<LocalDateTime> timeInterval) {
+        LocalDateTime latestViewTime = cfcdnipMapper.selectViewMaxTime();
+        if (latestViewTime == null || timeInterval.get(0).toLocalDate().isAfter(latestViewTime.toLocalDate())) {
+            cfcdnipMapper.truncateView();
+            cfcdnipMapper.copyToView(timeInterval);
+        }
+    }
+
+    private void updateRegion(List<CFCDNIPPO> records, CFCDNIPMapper cfcdnipMapperInternal) {
         List<CFCDNIPPO> updates = new ArrayList<>();
         HashSet<String> needQueryIps = new HashSet<>();
         for (CFCDNIPPO t : records) {
-            CFCDNIPPO existValueStrAndRegion = cfcdnipMapper.selectOneByValueStrAndHaveRegion(t.getValueStr());
+            CFCDNIPPO existValueStrAndRegion = cfcdnipMapperInternal.selectOneByValueStrAndHaveRegion(t.getValueStr());
             if (existValueStrAndRegion == null) {
                 needQueryIps.add(t.getValueStr());
                 continue;
@@ -85,7 +97,7 @@ public class CFCDNIPServiceImpl implements CFCDNIPService {
                         updates.add(updateEntity);
                     });
         }
-        updates.forEach(cfcdnipMapper::updateByValueStrAndNoRegion);
+        updates.forEach(cfcdnipMapperInternal::updateByValueStrAndNoRegion);
     }
 
 }
