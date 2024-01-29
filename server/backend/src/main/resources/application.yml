@@ -1,3 +1,17 @@
+server:
+  port: 8080
 spring:
   application:
     name: cf-best-server
+  cloud:
+    nacos:
+      server-addr: nacos.czy21-internal.com:8848
+      config:
+        namespace: cf-best
+---
+spring:
+  config:
+    import:
+      - nacos:${spring.application.name}.yml
+    activate:
+      on-profile: default

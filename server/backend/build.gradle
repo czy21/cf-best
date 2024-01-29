@@ -29,10 +29,8 @@ test {
     useJUnitPlatform()
 }
 dependencies {
-    api "org.projectlombok:lombok"
-    annotationProcessor "org.projectlombok:lombok"
-    api('com.sunny:sunny-framework-web') {
-        exclude group: 'com.alibaba.cloud', module: 'spring-cloud-starter-alibaba-nacos-config'
-        exclude group: 'com.alibaba.cloud', module: 'spring-cloud-starter-alibaba-nacos-discovery'
-    }
+    implementation "org.mapstruct:mapstruct", "org.projectlombok:lombok"
+    annotationProcessor "org.mapstruct:mapstruct-processor", "org.projectlombok:lombok", "org.projectlombok:lombok-mapstruct-binding"
+    api 'com.sunny:sunny-framework-web'
+    api 'com.sunny:sunny-framework-db'
 }
