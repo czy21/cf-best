@@ -34,7 +34,7 @@ if __name__ == '__main__':
                     }
                 )
                 db_session.commit()
-            elif event.message.file is not None and event.message.file.ext == ".txt":
+            if event.message.file is not None and event.message.file.ext == ".txt":
                 file_blob = await client.download_media(event.media, bytes)
                 file_name = event.message.file.name
                 file_str = file_blob.decode('utf-8')
