@@ -28,9 +28,9 @@ if __name__ == '__main__':
         with DBSession() as db_session:
             if event.message.rawtext is not None and event.message.rawtext.__contains__("扫描完毕"):
                 db_session.execute(
-                    text("update telegram_message set is_lastest = 1 where id = :id"),
+                    text("update telegram_message set is_lastest = 1 where message_id = :message_id"),
                     {
-                        'id': message_id - 1
+                        'message_id': message_id - 1
                     }
                 )
                 db_session.commit()
