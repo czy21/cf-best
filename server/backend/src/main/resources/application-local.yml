@@ -1,0 +1,15 @@
+server:
+  port: 8081
+spring:
+  config:
+    import:
+      - nacos:${spring.application.name}.yml
+  cloud:
+    openfeign:
+      client:
+        config:
+          default:
+            logger-level: full
+logging:
+  level:
+    com.cfbest.server.feign.IpApiFeign: debug

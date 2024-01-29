@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cfbest.server.mapper.CFCDNIPMapper">
+
+   <select id="selectCursorByTelegramMessageId" resultType="com.cfbest.server.model.po.CFCDNIPPO">
+     select
+         ci.*
+     from cf_cdn_ip ci
+     <where>
+         ci.telegram_message_id = #{telegramMessageId}
+         and ci.region is null
+     </where>
+   </select>
+    <update id="updateByValueStrAndNoRegion" parameterType="generator.domain.CfCdnIp">
+        update cf_cdn_ip
+        <set>
+            <if test="valueStr != null">
+                value_str = #{valueStr},
+            </if>
+            <if test="type != null">
+                type = #{type},
+            </if>
+            <if test="country != null">
+                country = #{country},
+            </if>
+            <if test="countryCode != null">
+                country_code = #{countryCode},
+            </if>
+            <if test="region != null">
+                region = #{region},
+            </if>
+            <if test="regionName != null">
+                region_name = #{regionName},
+            </if>
+            <if test="city != null">
+                city = #{city},
+            </if>
+            <if test="isp != null">
+                isp = #{isp},
+            </if>
+            <if test="telegramMessageId != null">
+                telegram_message_id = #{telegramMessageId},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="updateUser != null">
+                update_user = #{updateUser},
+            </if>
+        </set>
+        where value_str = #{valueStr} and region is null
+    </update>
+</mapper>

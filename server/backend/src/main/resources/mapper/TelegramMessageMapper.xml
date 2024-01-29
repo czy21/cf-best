@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cfbest.server.mapper.TelegramMessageMapper">
+
+   <select id="selectListByMessageTime" resultType="com.cfbest.server.model.po.TelegramMessagePO">
+       select * from telegram_message
+       <where>
+           `message_time` between #{timeInterval[0]} and #{timeInterval[1]}
+       </where>
+       order by message_time asc
+   </select>
+</mapper>

@@ -31,6 +31,7 @@ test {
 dependencies {
     implementation "org.mapstruct:mapstruct", "org.projectlombok:lombok"
     annotationProcessor "org.mapstruct:mapstruct-processor", "org.projectlombok:lombok", "org.projectlombok:lombok-mapstruct-binding"
+    api 'com.sunny:sunny-framework-core'
     api 'com.sunny:sunny-framework-web'
     api 'com.sunny:sunny-framework-db'
 }

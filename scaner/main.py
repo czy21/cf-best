@@ -23,13 +23,15 @@ if __name__ == '__main__':
 
     @client.on(events.NewMessage(chats="@cf_push"))
     async def handler(event):
+        chat_id = event.message.chat.id
         message_id = event.message.id
-        message_date = event.date.replace(tzinfo=pytz.utc).astimezone(pytz.timezone("Asia/Shanghai"))
+        message_time = event.date.replace(tzinfo=pytz.utc).astimezone(pytz.timezone("Asia/Shanghai"))
         with DBSession() as db_session:
             if event.message.raw_text is not None and event.message.raw_text.__contains__("扫描完毕"):
                 db_session.execute(
-                    text("update telegram_message set is_lastest = 1 where message_id = :message_id"),
+                    text("update telegram_message set is_latest = 1 where chat_id = :chat_id and message_id = :message_id"),
                     {
+                        'chat_id': chat_id,
                         'message_id': message_id - 1
                     }
                 )
@@ -41,10 +43,13 @@ if __name__ == '__main__':
                 file_mime_type = event.message.file.mime_type
                 ips = file_str.splitlines() if file_str else []
                 telegram_message_result = db_session.execute(
-                    text("INSERT INTO telegram_message(message_id,time, type, content, file_name, file_type) values(:message_id,:time,:type,:content,:file_name,:file_type)"),
+                    text("""INSERT INTO telegram_message(chat_id,message_id,message_time, type, content, file_name, file_type)
+                            values(:chat_id,:message_id,:message_time,:type,:content,:file_name,:file_type)
+                         """),
                     {
+                        'chat_id':chat_id,
                         'message_id': message_id,
-                        'time': message_date,
+                        'message_time': message_time,
                         'type': 1,
                         'content': None,
                         'file_name': file_name,
@@ -54,7 +59,9 @@ if __name__ == '__main__':
                 db_session.commit()
                 telegram_message_result_id = telegram_message_result.lastrowid
                 db_session.execute(
-                    text("""INSERT INTO cf_cdn_ip(value_str,type,telegram_message_id) values(:value_str,:type,:telegram_message_id)"""),
+                    text("""INSERT INTO cf_cdn_ip(value_str,type,telegram_message_id) 
+                            values(:value_str,:type,:telegram_message_id)
+                         """),
                     [
                         {
                             'value_str': t,
