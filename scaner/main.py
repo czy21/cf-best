@@ -23,17 +23,27 @@ if __name__ == '__main__':
 
     @client.on(events.NewMessage(chats="@cf_push"))
     async def handler(event):
+        message_id = event.message.id
         message_date = event.date.replace(tzinfo=pytz.utc).astimezone(pytz.timezone("Asia/Shanghai"))
-        if event.message.file is not None and event.message.file.ext == ".txt":
-            file_blob = await client.download_media(event.media, bytes)
-            file_name = event.message.file.name
-            file_str = file_blob.decode('utf-8')
-            file_mime_type = event.message.file.mime_type
-            ips = file_str.splitlines() if file_str else []
-            with DBSession() as db_session:
-                telegram_message_result = db_session.execute(
-                    text("INSERT INTO telegram_message(time, type, content, file_name, file_type) values(:time,:type,:content,:file_name,:file_type)"),
+        with DBSession() as db_session:
+            if event.message.rawtext is not None and event.message.rawtext.__contains__("扫描完毕"):
+                db_session.execute(
+                    text("update telegram_message set is_lastest = 1 where id = :id"),
                     {
+                        'id': message_id - 1
+                    }
+                )
+                db_session.commit()
+            elif event.message.file is not None and event.message.file.ext == ".txt":
+                file_blob = await client.download_media(event.media, bytes)
+                file_name = event.message.file.name
+                file_str = file_blob.decode('utf-8')
+                file_mime_type = event.message.file.mime_type
+                ips = file_str.splitlines() if file_str else []
+                telegram_message_result = db_session.execute(
+                    text("INSERT INTO telegram_message(message_id,time, type, content, file_name, file_type) values(:time,:type,:content,:file_name,:file_type)"),
+                    {
+                        'message_id': message_id,
                         'time': message_date,
                         'type': 1,
                         'content': None,
@@ -56,6 +66,14 @@ if __name__ == '__main__':
                     ]
                 )
                 db_session.commit()
+                db_session.execute(
+                    text("update telegram_message set status = 1 where id = :id"),
+                    {
+                        "id": telegram_message_result_id,
+                    }
+                )
+                db_session.commit()
+
 
     logger.info("cf-best-scaner started")
     try:
