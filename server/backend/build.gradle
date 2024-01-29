@@ -44,7 +44,7 @@ tasks.register('copyWebApp', Copy) {
 
 tasks.register('buildWeb', Exec) {
     workingDir "$rootDir/../frontend/"
-    commandLine 'sh', '-c', "yarn install && yarn build"
+    commandLine 'sh', '-c', "yarn install && yarn --ignore-engines build"
 }
 
 tasks.named('compileJava') {
