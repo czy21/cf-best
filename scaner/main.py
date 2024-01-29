@@ -41,7 +41,7 @@ if __name__ == '__main__':
                 file_mime_type = event.message.file.mime_type
                 ips = file_str.splitlines() if file_str else []
                 telegram_message_result = db_session.execute(
-                    text("INSERT INTO telegram_message(message_id,time, type, content, file_name, file_type) values(:time,:type,:content,:file_name,:file_type)"),
+                    text("INSERT INTO telegram_message(message_id,time, type, content, file_name, file_type) values(:message_id,:time,:type,:content,:file_name,:file_type)"),
                     {
                         'message_id': message_id,
                         'time': message_date,
