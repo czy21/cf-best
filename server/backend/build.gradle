@@ -35,3 +35,22 @@ dependencies {
     api 'com.sunny:sunny-framework-web'
     api 'com.sunny:sunny-framework-db'
 }
+
+
+tasks.register('copyWebApp', Copy) {
+    from "$rootDir/../frontend/build"
+    into "$buildDir/resources/main/static/"
+}
+
+tasks.register('buildWeb', Exec) {
+    workingDir "$rootDir/../frontend/"
+    commandLine 'sh', '-c', "yarn install && yarn build"
+}
+
+tasks.named('compileJava') {
+    dependsOn('buildWeb')
+}
+
+tasks.named('processResources') {
+    dependsOn('copyWebApp')
+}
