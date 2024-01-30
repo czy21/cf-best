@@ -19,8 +19,7 @@ public class JobConfig {
     @Autowired
     IpApiFeign ipApiFeign;
 
-    @Scheduled(cron = "0 0/30 * * * ?")
-     @XxlJob("processTGForCF")
+    @XxlJob("processTGForCF")
     public void processTelegramMessageForCF() {
         telegramMessageService.process(LocalDate.now());
     }
