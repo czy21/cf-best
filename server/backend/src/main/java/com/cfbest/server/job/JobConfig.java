@@ -1,5 +1,5 @@
 package com.cfbest.server.job;
-
+import com.xxl.job.core.handler.annotation.XxlJob;
 import com.cfbest.server.feign.IpApiFeign;
 import com.cfbest.server.service.TelegramMessageService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +20,7 @@ public class JobConfig {
     IpApiFeign ipApiFeign;
 
     @Scheduled(cron = "0 0/30 * * * ?")
+     @XxlJob("processTGForCF")
     public void processTelegramMessageForCF() {
         telegramMessageService.process(LocalDate.now());
     }
