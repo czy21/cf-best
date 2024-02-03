@@ -1,4 +1,5 @@
-package com.cfbest.server.job;
+package com.cfbest.server.config;
+
 import com.xxl.job.core.handler.annotation.XxlJob;
 import com.cfbest.server.feign.IpApiFeign;
 import com.cfbest.server.service.TelegramMessageService;
@@ -22,5 +23,10 @@ public class JobConfig {
     @XxlJob("processTGForCF")
     public void processTelegramMessageForCF() {
         telegramMessageService.process(LocalDate.now());
+    }
+
+    @XxlJob("cleanTelegramMessage")
+    public void cleanTelegramMessage() {
+        telegramMessageService.clean();
     }
 }

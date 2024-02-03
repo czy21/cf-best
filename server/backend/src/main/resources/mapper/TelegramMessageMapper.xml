@@ -11,4 +11,13 @@
        </where>
        order by message_time asc
    </select>
+
+    <delete id="deleteByTimeInterval">
+        delete t1,t2
+        from telegram_message t1
+        inner join cf_cdn_ip t2 on t2.telegram_message_id = t1.id
+        <where>
+            t1.message_time &lt; #{retainTime}
+        </where>
+    </delete>
 </mapper>

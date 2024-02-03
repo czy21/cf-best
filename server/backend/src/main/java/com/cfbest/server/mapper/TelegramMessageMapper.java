@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -20,6 +21,11 @@ public interface TelegramMessageMapper {
 
     @Update("update telegram_message set status = #{status} where id = #{id}")
     void updateStatus(@Param("id") Long id, @Param("status") Integer status);
+
+    @Select("select max(date(`message_time`)) from telegram_message")
+    LocalDate selectLatestDate();
+
+    void deleteByTimeInterval(LocalDateTime retainTime);
 }
 
 
