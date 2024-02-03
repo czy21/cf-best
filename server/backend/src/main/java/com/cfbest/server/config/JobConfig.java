@@ -14,8 +14,8 @@ public class JobConfig {
         this.telegramMessageService = telegramMessageService;
     }
 
-    @XxlJob("processTGForCF")
-    public void processTelegramMessageForCF() {
+    @XxlJob("processTelegramMessage")
+    public void processTelegramMessage() {
         telegramMessageService.process(LocalDate.now());
     }
 
