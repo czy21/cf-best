@@ -1,18 +1,44 @@
 import React from "react";
 
-import { Breadcrumb, Layout, Menu, theme } from 'antd';
-const AntdHeader = Layout.Header
+import {Layout, Menu} from 'antd';
+import {Link} from "react-router-dom";
+import stub from "@/init";
+import menu from "@/menu";
 
 
-const items = new Array(3).fill(null).map((_, index) => ({
-    key: String(index + 1),
-    label: `nav ${index + 1}`,
-}));
+function recursiveMenu(routes: any, parentPath?: string) {
+    return routes.map((item: any, index: any) => {
+        if (item.children) {
+            return (
+                <Menu.SubMenu
+                    key={index}
+                    title={
+                        <span>
+                            {item.icon}
+                            <span>{item.name}</span>
+                        </span>
+                    }
+                >
+                    {recursiveMenu(item.children, item.path)}
+                </Menu.SubMenu>
+            )
+        }
+        return (
+            <Menu.Item
+                key={index}
+            >
+                {item.icon}
+                <span>{item.name}</span>
+                <Link to={parentPath != null ? stub.ref.lodash.join([parentPath, item.path], "/") : item.path}/>
+            </Menu.Item>
+        )
+    })
+}
 
 export default class Header extends React.Component<any, any> {
     render() {
         return (
-            <AntdHeader
+            <Layout.Header
                 style={{
                     position: 'sticky',
                     top: 0,
@@ -22,14 +48,10 @@ export default class Header extends React.Component<any, any> {
                     alignItems: 'center',
                 }}
             >
-                <Menu
-                    theme="dark"
-                    mode="horizontal"
-                    defaultSelectedKeys={['2']}
-                    items={items}
-                    style={{ flex: 1, minWidth: 0 }}
-                />
-            </AntdHeader>
+                <Menu>
+                    {recursiveMenu(menu)}
+                </Menu>
+            </Layout.Header>
         )
     }
 }

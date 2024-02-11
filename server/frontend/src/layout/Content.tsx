@@ -1,16 +1,14 @@
 import React from "react";
-import { Breadcrumb, Layout, Menu, theme } from 'antd';
+import {Layout} from 'antd';
+import {useRoutes} from "react-router-dom";
+import routes from "@/route";
 
 const AntdContent = Layout.Content;
 
 const Content: React.FC = () => {
-    const {
-        token: { colorBgContainer, borderRadiusLG },
-    } = theme.useToken();
     return (
-
-        <AntdContent >
-                Content
+        <AntdContent>
+            {useRoutes(routes)}
         </AntdContent>
     )
 }

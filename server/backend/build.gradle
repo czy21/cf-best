@@ -38,7 +38,7 @@ dependencies {
 }
 
 
-tasks.register('copyWebApp', Copy) {
+tasks.register('copyWeb', Copy) {
     from "$rootDir/../frontend/build"
     into "$buildDir/resources/main/static/"
 }
@@ -53,5 +53,5 @@ tasks.named('compileJava') {
 }
 
 tasks.named('processResources') {
-    dependsOn('copyWebApp')
+    dependsOn('copyWeb')
 }
