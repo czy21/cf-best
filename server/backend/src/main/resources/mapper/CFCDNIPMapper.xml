@@ -50,7 +50,7 @@
                 update_user = #{updateUser},
             </if>
         </set>
-        where value_str = #{valueStr} and region is null
+        where value_str = #{valueStr} and country is null
     </update>
 
     <insert id="copyToView">
