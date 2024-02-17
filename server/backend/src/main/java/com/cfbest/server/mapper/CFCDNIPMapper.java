@@ -20,7 +20,7 @@ public interface CFCDNIPMapper {
     @Options(fetchSize = Integer.MIN_VALUE)
     Cursor<CFCDNIPPO> selectCursorByTelegramMessageId(@Param("telegramMessageId") Long telegramMessageId);
 
-    @Select("select * from cf_cdn_ip where value_str = #{valueStr} and region is not null limit 1")
+    @Select("select * from cf_cdn_ip where value_str = #{valueStr} and country is not null limit 1")
     CFCDNIPPO selectOneByValueStrAndHaveRegion(@Param("valueStr") String valueStr);
 
     void updateByValueStrAndNoRegion(CFCDNIPPO entity);

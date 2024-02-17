@@ -84,7 +84,7 @@ public class CFCDNIPServiceImpl implements CFCDNIPService {
         if (CollectionUtils.isNotEmpty(needQueryIps)) {
             List<IpApiBatchResult> results = Optional.ofNullable(ipApiFeign.batch(needQueryIps)).orElse(new ArrayList<>());
             results.stream()
-                    .filter(t -> StringUtils.isNotEmpty(t.getRegion()))
+                    .filter(t -> StringUtils.isNotEmpty(t.getCountry()))
                     .forEach(t -> {
                         CFCDNIPPO updateEntity = new CFCDNIPPO();
                         updateEntity.setValueStr(t.getQuery());
