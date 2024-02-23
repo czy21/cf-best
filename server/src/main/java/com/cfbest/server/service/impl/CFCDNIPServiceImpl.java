@@ -3,8 +3,15 @@ package com.cfbest.server.service.impl;
 import com.cfbest.server.feign.IpApiFeign;
 import com.cfbest.server.feign.model.IpApiBatchResult;
 import com.cfbest.server.mapper.CFCDNIPMapper;
+import com.cfbest.server.model.dto.CFCDNIPDTO;
 import com.cfbest.server.model.po.CFCDNIPPO;
+import com.cfbest.server.model.query.CFCDNIPQuery;
 import com.cfbest.server.service.CFCDNIPService;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.sunny.framework.core.model.PagingResult;
+import com.sunny.framework.core.util.PageUtil;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.cursor.Cursor;
@@ -59,6 +66,14 @@ public class CFCDNIPServiceImpl implements CFCDNIPService {
         if (latestViewTime == null || timeInterval.get(0).toLocalDate().isAfter(latestViewTime.toLocalDate())) {
             cfcdnipMapper.truncateView();
             cfcdnipMapper.copyToView(timeInterval);
+        }
+    }
+
+    @Override
+    public PagingResult<CFCDNIPDTO> page(CFCDNIPQuery query) {
+        try (Page<CFCDNIPDTO> page = PageHelper.startPage(query.getPage(), query.getPageSize())) {
+            PageInfo<CFCDNIPDTO> pageInfo = page.doSelectPageInfo(() -> cfcdnipMapper.selectListBy(query));
+            return PageUtil.convert(pageInfo);
         }
     }
 

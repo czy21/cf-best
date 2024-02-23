@@ -1,6 +1,7 @@
 package com.cfbest.server.mapper;
 
 import com.cfbest.server.model.po.CFCDNIPPO;
+import com.cfbest.server.model.query.CFCDNIPQuery;
 import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -32,6 +33,8 @@ public interface CFCDNIPMapper {
 
     @Select("select max(create_time) from cf_cdn_ip_view")
     LocalDateTime selectViewMaxTime();
+
+    List<CFCDNIPPO> selectListBy(CFCDNIPQuery query);
 }
 
 

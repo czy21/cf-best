@@ -61,4 +61,10 @@
         inner join telegram_message tm on tm.id = ci.telegram_message_id
         where tm.message_time between #{timeInterval[0]} and #{timeInterval[1]}
     </insert>
+
+    <select id="selectListBy" resultType="com.cfbest.server.model.po.CFCDNIPPO">
+        select
+            iv.*
+        from cf_cdn_ip_view iv
+    </select>
 </mapper>
