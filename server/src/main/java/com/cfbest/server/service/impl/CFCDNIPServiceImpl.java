@@ -11,6 +11,7 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.sunny.framework.core.model.PagingResult;
+import com.sunny.framework.core.model.SimpleItemModel;
 import com.sunny.framework.core.util.PageUtil;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -20,11 +21,10 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.MessageFormat;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class CFCDNIPServiceImpl implements CFCDNIPService {
@@ -75,6 +75,31 @@ public class CFCDNIPServiceImpl implements CFCDNIPService {
             PageInfo<CFCDNIPDTO> pageInfo = page.doSelectPageInfo(() -> cfcdnipMapper.selectListBy(query));
             return PageUtil.convert(pageInfo);
         }
+    }
+
+    @Override
+    public List<SimpleItemModel<String>> getCountryCityTree() {
+        List<CFCDNIPPO> cfcdnippos = cfcdnipMapper.selectListGroupByCountryAndCity();
+        List<SimpleItemModel<String>> countryTree = cfcdnippos.stream()
+                .map(t -> {
+                    SimpleItemModel<String> d = SimpleItemModel.of(t.getCountry(), t.getCountry());
+                    d.setId(MessageFormat.format("{0}-{1}", "country", t.getCountry()));
+                    return d;
+                })
+                .collect(Collectors.collectingAndThen(Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(SimpleItemModel::getValue))), ArrayList::new));
+        countryTree.forEach(t -> {
+            List<SimpleItemModel<String>> children =
+                    cfcdnippos.stream()
+                            .filter(s -> MessageFormat.format("{0}-{1}", "country", s.getCountry()).equals(t.getValue()))
+                            .map(s -> {
+                                SimpleItemModel<String> d = SimpleItemModel.of(s.getCity(), s.getCity());
+                                d.setId(MessageFormat.format("{0}-{1}", "city", s.getCity()));
+                                return d;
+                            })
+                            .collect(Collectors.toList());
+            t.setChildren(children);
+        });
+        return countryTree;
     }
 
     private void updateRegion(List<CFCDNIPPO> records, CFCDNIPMapper cfcdnipMapperInternal) {
