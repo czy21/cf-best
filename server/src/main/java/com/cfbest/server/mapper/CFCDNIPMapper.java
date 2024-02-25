@@ -2,6 +2,7 @@ package com.cfbest.server.mapper;
 
 import com.cfbest.server.model.po.CFCDNIPPO;
 import com.cfbest.server.model.query.CFCDNIPQuery;
+import com.sunny.framework.core.model.SimpleItemModel;
 import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -35,6 +36,9 @@ public interface CFCDNIPMapper {
     LocalDateTime selectViewMaxTime();
 
     List<CFCDNIPPO> selectListBy(CFCDNIPQuery query);
+
+    List<CFCDNIPPO> selectListGroupByCountryAndCity();
+
 }
 
 

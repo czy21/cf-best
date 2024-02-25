@@ -66,5 +66,20 @@
         select
             iv.*
         from cf_cdn_ip_view iv
+        <where>
+            <if test="country != null and country != ''">
+                and iv.country = #{country}
+            </if>
+            <if test="city != null and city != ''">
+                and iv.city = #{city}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectListGroupByCountryAndCity" resultType="com.cfbest.server.model.po.CFCDNIPPO">
+        select
+            iv.country,iv.city
+        from cf_cdn_ip_view iv
+        group by iv.country,iv.city
     </select>
 </mapper>

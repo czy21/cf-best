@@ -7,4 +7,6 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class CFCDNIPQuery extends PagingParam {
+    private String country;
+    private String city;
 }
