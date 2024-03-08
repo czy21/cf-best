@@ -76,6 +76,7 @@
                 </if>
             </foreach>
         </where>
+        order by iv.country,iv.city
     </select>
 
     <select id="selectListGroupByCountryAndCity" resultType="com.cfbest.server.model.po.CFCDNIPPO">
@@ -83,5 +84,6 @@
             iv.country,iv.city
         from cf_cdn_ip_view iv
         group by iv.country,iv.city
+        order by iv.country,iv.city
     </select>
 </mapper>
