@@ -81,21 +81,13 @@ public class CFCDNIPServiceImpl implements CFCDNIPService {
     public List<SimpleItemModel<String>> getCountryCityTree() {
         List<CFCDNIPPO> cfcdnippos = cfcdnipMapper.selectListGroupByCountryAndCity();
         List<SimpleItemModel<String>> countryTree = cfcdnippos.stream()
-                .map(t -> {
-                    SimpleItemModel<String> d = SimpleItemModel.of(t.getCountry(), t.getCountry());
-                    d.setId(MessageFormat.format("{0}-{1}", "country", t.getCountry()));
-                    return d;
-                })
+                .map(t -> SimpleItemModel.of(t.getCountry(), t.getCountry()))
                 .collect(Collectors.collectingAndThen(Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(SimpleItemModel::getValue))), ArrayList::new));
         countryTree.forEach(t -> {
             List<SimpleItemModel<String>> children =
                     cfcdnippos.stream()
-                            .filter(s -> MessageFormat.format("{0}-{1}", "country", s.getCountry()).equals(t.getValue()))
-                            .map(s -> {
-                                SimpleItemModel<String> d = SimpleItemModel.of(s.getCity(), s.getCity());
-                                d.setId(MessageFormat.format("{0}-{1}", "city", s.getCity()));
-                                return d;
-                            })
+                            .filter(s ->  s.getCountry().equals(t.getValue()))
+                            .map(s -> SimpleItemModel.of(s.getCity(), s.getCity()))
                             .collect(Collectors.toList());
             t.setChildren(children);
         });

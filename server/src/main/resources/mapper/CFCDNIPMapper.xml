@@ -67,12 +67,14 @@
             iv.*
         from cf_cdn_ip_view iv
         <where>
-            <if test="country != null and country != ''">
-                and iv.country = #{country}
-            </if>
-            <if test="city != null and city != ''">
-                and iv.city = #{city}
-            </if>
+            <foreach collection="locations" item="t">
+                <if test="t.size() == 1">
+                    or (iv.country = '${t[0]}')
+                </if>
+                <if test="t.size() == 2">
+                    or (iv.country = '${t[0]}' and iv.city = '${t[1]}')
+                </if>
+            </foreach>
         </where>
     </select>
 

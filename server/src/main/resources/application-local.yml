@@ -10,6 +10,9 @@ spring:
         config:
           default:
             logger-level: full
+    nacos:
+      discovery:
+        namespace: cf-best
 logging:
   level:
     com.cfbest.server.feign.IpApiFeign: debug

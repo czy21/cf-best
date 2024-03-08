@@ -4,9 +4,10 @@ import com.sunny.framework.core.model.PagingParam;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.List;
+
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class CFCDNIPQuery extends PagingParam {
-    private String country;
-    private String city;
+    private List<List<String>> locations;
 }
