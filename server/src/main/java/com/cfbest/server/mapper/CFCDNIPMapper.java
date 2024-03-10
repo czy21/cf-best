@@ -1,5 +1,6 @@
 package com.cfbest.server.mapper;
 
+import com.cfbest.server.model.dto.CFBestAggCountryDTO;
 import com.cfbest.server.model.po.CFCDNIPPO;
 import com.cfbest.server.model.query.CFCDNIPQuery;
 import com.sunny.framework.core.model.SimpleItemModel;
@@ -41,6 +42,8 @@ public interface CFCDNIPMapper {
     List<CFCDNIPPO> selectListBy(CFCDNIPQuery query);
 
     List<CFCDNIPPO> selectListGroupByCountryAndCity();
+
+    List<CFBestAggCountryDTO> selectListForAggCountry();
 
 }
 

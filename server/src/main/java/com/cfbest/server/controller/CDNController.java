@@ -1,5 +1,6 @@
 package com.cfbest.server.controller;
 
+import com.cfbest.server.model.dto.CFBestAggCountryDTO;
 import com.cfbest.server.model.dto.CFCDNIPDTO;
 import com.cfbest.server.model.query.CFCDNIPQuery;
 import com.cfbest.server.service.CFCDNIPService;
@@ -26,5 +27,10 @@ public class CDNController {
     @GetMapping(path = "countryTree")
     public CommonResult<List<SimpleItemModel<String>>> countryTree() {
         return CommonResult.ok(cfcdnipService.getCountryCityTree());
+    }
+
+    @GetMapping(path = "getAggCountry")
+    public CommonResult<List<CFBestAggCountryDTO>> getAggCountry() {
+        return CommonResult.ok(cfcdnipService.getAggCountry());
     }
 }

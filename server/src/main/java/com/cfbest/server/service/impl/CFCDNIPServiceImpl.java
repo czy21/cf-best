@@ -3,6 +3,7 @@ package com.cfbest.server.service.impl;
 import com.cfbest.server.feign.IpApiFeign;
 import com.cfbest.server.feign.model.IpApiBatchResult;
 import com.cfbest.server.mapper.CFCDNIPMapper;
+import com.cfbest.server.model.dto.CFBestAggCountryDTO;
 import com.cfbest.server.model.dto.CFCDNIPDTO;
 import com.cfbest.server.model.po.CFCDNIPPO;
 import com.cfbest.server.model.query.CFCDNIPQuery;
@@ -87,12 +88,17 @@ public class CFCDNIPServiceImpl implements CFCDNIPService {
         countryTree.forEach(t -> {
             List<SimpleItemModel<String>> children =
                     cfcdnippos.stream()
-                            .filter(s ->  s.getCountry().equals(t.getValue()))
+                            .filter(s -> s.getCountry().equals(t.getValue()))
                             .map(s -> SimpleItemModel.of(s.getCity(), s.getCity()))
                             .collect(Collectors.toList());
             t.setChildren(children);
         });
         return countryTree;
+    }
+
+    @Override
+    public List<CFBestAggCountryDTO> getAggCountry() {
+        return cfcdnipMapper.selectListForAggCountry();
     }
 
     private void updateRegion(List<CFCDNIPPO> records, CFCDNIPMapper cfcdnipMapperInternal) {

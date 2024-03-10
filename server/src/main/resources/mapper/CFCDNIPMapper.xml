@@ -97,4 +97,11 @@
         group by iv.country,iv.city
         order by iv.country,iv.city
     </select>
+    <select id="selectListForAggCountry" resultType="com.cfbest.server.model.dto.CFBestAggCountryDTO">
+        select
+            cs.country as name,
+            cs.value
+        from cf_cdn_ip_stat cs
+        where cs.date = (select date(ci.create_time) from cf_cdn_ip_view ci limit 1)
+    </select>
 </mapper>
