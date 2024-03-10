@@ -17,7 +17,7 @@ if __name__ == '__main__':
     api_hash = os.getenv("CF_BEST_API_HASH")
     telethon_session = os.getenv("CF_BEST_SESSION", "session")
     mysql_url = os.getenv("CF_BEST_MYSQL_URL")
-    DBSession = sessionmaker(bind=sqlalchemy.create_engine(mysql_url))
+    DBSession = sessionmaker(bind=sqlalchemy.create_engine(mysql_url, pool_recycle=3600))
     client = TelegramClient(session=telethon_session, api_id=api_id, api_hash=api_hash).start()
 
 
