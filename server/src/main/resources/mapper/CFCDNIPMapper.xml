@@ -62,6 +62,17 @@
         where tm.message_time between #{timeInterval[0]} and #{timeInterval[1]}
     </insert>
 
+    <insert id="aggByCountry">
+        delete from cf_cdn_ip_stat where date = #{date};
+        insert into cf_cdn_ip_stat(date,country,value)
+        select
+            #{date},
+            ci.country,
+            count(0) as value
+        from cf_cdn_ip_view ci
+        group by ci.country
+    </insert>
+
     <select id="selectListBy" resultType="com.cfbest.server.model.po.CFCDNIPPO">
         select
             iv.*

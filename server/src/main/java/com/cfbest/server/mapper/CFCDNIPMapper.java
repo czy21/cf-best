@@ -9,6 +9,7 @@ import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 import org.apache.ibatis.cursor.Cursor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -28,6 +29,8 @@ public interface CFCDNIPMapper {
     void updateByValueStrAndNoRegion(CFCDNIPPO entity);
 
     void copyToView(@Param("timeInterval") List<LocalDateTime> timeInterval);
+
+    void aggByCountry(@Param("date") LocalDate date);
 
     @Update("truncate table cf_cdn_ip_view")
     void truncateView();

@@ -66,6 +66,7 @@ public class CFCDNIPServiceImpl implements CFCDNIPService {
         if (latestViewTime == null || timeInterval.get(0).toLocalDate().isAfter(latestViewTime.toLocalDate())) {
             cfcdnipMapper.truncateView();
             cfcdnipMapper.copyToView(timeInterval);
+            cfcdnipMapper.aggByCountry(timeInterval.get(0).toLocalDate());
         }
     }
 
