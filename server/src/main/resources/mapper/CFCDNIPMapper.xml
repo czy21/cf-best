@@ -86,6 +86,9 @@
                     or (iv.country = '${t[0]}' and iv.city = '${t[1]}')
                 </if>
             </foreach>
+            <if test="valueStr !=null and valueStr != ''">
+                and iv.value_str = #{valueStr}
+            </if>
         </where>
         order by iv.country,iv.city
     </select>

@@ -10,4 +10,5 @@ import java.util.List;
 @Data
 public class CFCDNIPQuery extends PagingParam {
     private List<List<String>> locations;
+    private String valueStr;
 }
