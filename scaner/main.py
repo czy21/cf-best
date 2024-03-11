@@ -17,7 +17,7 @@ if __name__ == '__main__':
     api_hash = os.getenv("CF_BEST_API_HASH")
     telethon_session = os.getenv("CF_BEST_SESSION", "session")
     mysql_url = os.getenv("CF_BEST_MYSQL_URL")
-    DBSession = sessionmaker(bind=sqlalchemy.create_engine(mysql_url, pool_recycle=3600))
+    DBSession = sessionmaker(bind=sqlalchemy.create_engine(mysql_url, pool_recycle=3600,echo=True))
     client = TelegramClient(session=telethon_session, api_id=api_id, api_hash=api_hash).start()
 
 
@@ -28,6 +28,7 @@ if __name__ == '__main__':
         message_time = event.date.replace(tzinfo=pytz.utc).astimezone(pytz.timezone("Asia/Shanghai"))
         with DBSession() as db_session:
             if event.message.raw_text is not None and event.message.raw_text.__contains__("扫描完毕"):
+                print("扫描完毕========================")
                 db_session.execute(
                     text("update telegram_message set is_latest = 1 where chat_id = :chat_id and message_id = :message_id"),
                     {
