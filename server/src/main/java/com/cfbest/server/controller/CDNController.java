@@ -37,7 +37,7 @@ public class CDNController extends BaseController {
 
     @PostMapping(path = "export")
     public CompletableFuture<ResponseEntity<byte[]>> export(@RequestBody CFCDNIPQuery query) throws UnsupportedEncodingException {
-        String fileName = URLEncoder.encode(MessageFormat.format("cf-cdn-ip-{0}.xlsx", LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))), StandardCharsets.UTF_8.name());
+        String fileName = URLEncoder.encode(MessageFormat.format("cf-cdn-ip-{0}.xlsx", LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))), StandardCharsets.UTF_8);
         return CompletableFuture.supplyAsync(() -> downloadExcel(cfcdnipService.exportBy(query), CFIPExportDTO.class, fileName));
     }
 
