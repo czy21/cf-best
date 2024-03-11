@@ -1,9 +1,9 @@
 package com.cfbest.server.mapper;
 
-import com.cfbest.server.model.dto.CFBestAggCountryDTO;
+import com.cfbest.server.model.dto.CFAggCountryDTO;
 import com.cfbest.server.model.po.CFCDNIPPO;
+import com.cfbest.server.model.po.CFIPStat;
 import com.cfbest.server.model.query.CFCDNIPQuery;
-import com.sunny.framework.core.model.SimpleItemModel;
 import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -43,7 +43,9 @@ public interface CFCDNIPMapper {
 
     List<CFCDNIPPO> selectListGroupByCountryAndCity();
 
-    List<CFBestAggCountryDTO> selectListForAggCountry();
+    List<CFAggCountryDTO> selectListForAggCountry();
+
+    List<CFIPStat> selectListGroupByDateAndCountry(@Param("dateInterval") List<LocalDate> dateInterval);
 
 }
 

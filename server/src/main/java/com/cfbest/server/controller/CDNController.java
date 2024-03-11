@@ -1,6 +1,7 @@
 package com.cfbest.server.controller;
 
-import com.cfbest.server.model.dto.CFBestAggCountryDTO;
+import com.cfbest.server.model.dto.CFAggCountryDTO;
+import com.cfbest.server.model.dto.CFDayCountryDTO;
 import com.cfbest.server.model.dto.CFCDNIPDTO;
 import com.cfbest.server.model.query.CFCDNIPQuery;
 import com.cfbest.server.service.CFCDNIPService;
@@ -30,7 +31,12 @@ public class CDNController {
     }
 
     @GetMapping(path = "getAggCountry")
-    public CommonResult<List<CFBestAggCountryDTO>> getAggCountry() {
+    public CommonResult<List<CFAggCountryDTO>> getAggCountry() {
         return CommonResult.ok(cfcdnipService.getAggCountry());
+    }
+
+    @GetMapping(path = "getDayCountry")
+    public CommonResult<CFDayCountryDTO> getDayCountry() {
+        return CommonResult.ok(cfcdnipService.getDayCountry());
     }
 }

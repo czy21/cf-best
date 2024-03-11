@@ -97,11 +97,19 @@
         group by iv.country,iv.city
         order by iv.country,iv.city
     </select>
-    <select id="selectListForAggCountry" resultType="com.cfbest.server.model.dto.CFBestAggCountryDTO">
+    <select id="selectListForAggCountry" resultType="com.cfbest.server.model.dto.CFAggCountryDTO">
         select
             cs.country as name,
             cs.value
         from cf_cdn_ip_stat cs
         where cs.date = (select date(ci.create_time) from cf_cdn_ip_view ci limit 1)
+    </select>
+    <select id="selectListGroupByDateAndCountry" resultType="com.cfbest.server.model.po.CFIPStat">
+        select
+            cs.date,cs.country,
+            sum(value) as value
+        from cf_cdn_ip_stat cs
+        where cs.date between #{dateInterval[0]} and #{dateInterval[1]}
+        group by cs.date,cs.country
     </select>
 </mapper>

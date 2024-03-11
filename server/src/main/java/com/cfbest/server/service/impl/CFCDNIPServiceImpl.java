@@ -3,9 +3,11 @@ package com.cfbest.server.service.impl;
 import com.cfbest.server.feign.IpApiFeign;
 import com.cfbest.server.feign.model.IpApiBatchResult;
 import com.cfbest.server.mapper.CFCDNIPMapper;
-import com.cfbest.server.model.dto.CFBestAggCountryDTO;
+import com.cfbest.server.model.dto.CFAggCountryDTO;
 import com.cfbest.server.model.dto.CFCDNIPDTO;
+import com.cfbest.server.model.dto.CFDayCountryDTO;
 import com.cfbest.server.model.po.CFCDNIPPO;
+import com.cfbest.server.model.po.CFIPStat;
 import com.cfbest.server.model.query.CFCDNIPQuery;
 import com.cfbest.server.service.CFCDNIPService;
 import com.github.pagehelper.Page;
@@ -16,16 +18,20 @@ import com.sunny.framework.core.model.SimpleItemModel;
 import com.sunny.framework.core.util.PageUtil;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DurationUtils;
 import org.apache.ibatis.cursor.Cursor;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.text.MessageFormat;
+import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class CFCDNIPServiceImpl implements CFCDNIPService {
@@ -97,8 +103,31 @@ public class CFCDNIPServiceImpl implements CFCDNIPService {
     }
 
     @Override
-    public List<CFBestAggCountryDTO> getAggCountry() {
+    public List<CFAggCountryDTO> getAggCountry() {
         return cfcdnipMapper.selectListForAggCountry();
+    }
+
+    @Override
+    public CFDayCountryDTO getDayCountry() {
+        CFDayCountryDTO dto = new CFDayCountryDTO();
+        LocalDate endTime = cfcdnipMapper.selectViewMaxTime().toLocalDate();
+        LocalDate startTime = endTime.plusDays(-6);
+        List<LocalDate> dates = Stream.iterate(startTime, date -> date.plusDays(1)).limit(7).collect(Collectors.toList());
+        dto.setDays(dates);
+        Map<String, List<CFIPStat>> ipStatMap = cfcdnipMapper.selectListGroupByDateAndCountry(List.of(startTime, endTime)).stream().collect(Collectors.groupingBy(t -> t.getCountry()));
+        List<CFDayCountryDTO.Series> series = new ArrayList<>();
+        ipStatMap.forEach((k, v) -> {
+            CFDayCountryDTO.Series series1 = new CFDayCountryDTO.Series();
+            series1.setName(k);
+            series1.setData(new ArrayList<>());
+            for (LocalDate d : dates) {
+                v.stream().filter(t -> t.getDate().equals(d)).findFirst()
+                        .ifPresentOrElse(t -> series1.getData().add(t.getValue()), () -> series1.getData().add(0));
+            }
+            series.add(series1);
+        });
+        dto.setSeries(series);
+        return dto;
     }
 
     private void updateRegion(List<CFCDNIPPO> records, CFCDNIPMapper cfcdnipMapperInternal) {
