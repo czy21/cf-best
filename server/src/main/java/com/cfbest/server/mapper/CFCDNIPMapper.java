@@ -1,6 +1,7 @@
 package com.cfbest.server.mapper;
 
 import com.cfbest.server.model.dto.CFAggCountryDTO;
+import com.cfbest.server.model.dto.excel.CFIPExportDTO;
 import com.cfbest.server.model.po.CFCDNIPPO;
 import com.cfbest.server.model.po.CFIPStat;
 import com.cfbest.server.model.query.CFCDNIPQuery;

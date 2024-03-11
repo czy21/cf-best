@@ -1,11 +1,13 @@
 package com.cfbest.server.service.impl;
 
+import com.cfbest.server.automap.CFCDNIPAutoMap;
 import com.cfbest.server.feign.IpApiFeign;
 import com.cfbest.server.feign.model.IpApiBatchResult;
 import com.cfbest.server.mapper.CFCDNIPMapper;
 import com.cfbest.server.model.dto.CFAggCountryDTO;
 import com.cfbest.server.model.dto.CFCDNIPDTO;
 import com.cfbest.server.model.dto.CFDayCountryDTO;
+import com.cfbest.server.model.dto.excel.CFIPExportDTO;
 import com.cfbest.server.model.po.CFCDNIPPO;
 import com.cfbest.server.model.po.CFIPStat;
 import com.cfbest.server.model.query.CFCDNIPQuery;
@@ -43,6 +45,8 @@ public class CFCDNIPServiceImpl implements CFCDNIPService {
     IpApiFeign ipApiFeign;
     @Autowired
     CFCDNIPMapper cfcdnipMapper;
+    @Autowired
+    CFCDNIPAutoMap cfcdnipAutoMap;
 
     @Override
     public void populateRegion(Long telegramMessageId) {
@@ -83,6 +87,11 @@ public class CFCDNIPServiceImpl implements CFCDNIPService {
             PageInfo<CFCDNIPDTO> pageInfo = page.doSelectPageInfo(() -> cfcdnipMapper.selectListBy(query));
             return PageUtil.convert(pageInfo);
         }
+    }
+
+    @Override
+    public List<CFIPExportDTO> exportBy(CFCDNIPQuery query) {
+        return cfcdnipAutoMap.mapToExportDTOs(cfcdnipMapper.selectListBy(query));
     }
 
     @Override
