@@ -27,16 +27,6 @@ if __name__ == '__main__':
         message_id = event.message.id
         message_time = event.date.replace(tzinfo=pytz.utc).astimezone(pytz.timezone("Asia/Shanghai"))
         with DBSession() as db_session:
-            if event.message.raw_text is not None and event.message.raw_text.__contains__("扫描完毕"):
-                print("扫描完毕========================")
-                db_session.execute(
-                    text("update telegram_message set is_latest = 1 where chat_id = :chat_id and message_id = :message_id"),
-                    {
-                        'chat_id': chat_id,
-                        'message_id': message_id - 1
-                    }
-                )
-                db_session.commit()
             if event.message.file is not None and event.message.file.ext == ".txt":
                 file_blob = await client.download_media(event.media, bytes)
                 file_name = event.message.file.name
@@ -78,6 +68,15 @@ if __name__ == '__main__':
                     text("update telegram_message set status = 1 where id = :id"),
                     {
                         "id": telegram_message_result_id,
+                    }
+                )
+                db_session.commit()
+            if event.message.raw_text is not None and event.message.raw_text.__contains__("扫描完毕"):
+                db_session.execute(
+                    text("update telegram_message set is_latest = 1 where chat_id = :chat_id and message_id = :message_id"),
+                    {
+                        'chat_id': chat_id,
+                        'message_id': message_id - 1
                     }
                 )
                 db_session.commit()
