@@ -76,7 +76,7 @@ if __name__ == '__main__':
                     text("update telegram_message set is_latest = 1 where chat_id = :chat_id and message_id = :message_id"),
                     {
                         'chat_id': chat_id,
-                        'message_id': message_id - 1
+                        'message_id': message_id
                     }
                 )
                 db_session.commit()
