@@ -72,11 +72,12 @@ if __name__ == '__main__':
                 )
                 db_session.commit()
             if event.message.raw_text is not None and event.message.raw_text.__contains__("扫描完毕"):
+                print(message_id)
                 db_session.execute(
                     text("update telegram_message set is_latest = 1 where chat_id = :chat_id and message_id = :message_id"),
                     {
                         'chat_id': chat_id,
-                        'message_id': message_id
+                        'message_id': message_id - 1
                     }
                 )
                 db_session.commit()
