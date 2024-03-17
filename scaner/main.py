@@ -25,7 +25,7 @@ if __name__ == '__main__':
 
     @client.on(events.NewMessage(chats="@cf_push"))
     async def handler(event):
-        logger.debug("接受消息: ".format(event.message))
+        logger.debug("接收消息: {}".format(event.message))
         chat_id = event.message.chat.id
         message_id = event.message.id
         message_time = event.date.replace(tzinfo=pytz.utc).astimezone(pytz.timezone("Asia/Shanghai"))
