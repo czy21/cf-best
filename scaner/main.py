@@ -7,27 +7,31 @@ from sqlalchemy import text
 from sqlalchemy.orm import sessionmaker
 from telethon import TelegramClient, events
 
+api_id = int(os.getenv("CF_BEST_API_ID"))
+api_hash = os.getenv("CF_BEST_API_HASH")
+telethon_session = os.getenv("CF_BEST_SESSION", "session")
+mysql_url = os.getenv("CF_BEST_MYSQL_URL")
+log_level = os.getenv("CF_BEST_LOG_LEVEL", logging.INFO)
+
 logger = logging.getLogger('cf-best-scaner')
 ch = logging.StreamHandler()
 ch.formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger.addHandler(ch)
-logger.setLevel(logging.INFO)
+logger.setLevel(log_level)
 if __name__ == '__main__':
-    api_id = int(os.getenv("CF_BEST_API_ID"))
-    api_hash = os.getenv("CF_BEST_API_HASH")
-    telethon_session = os.getenv("CF_BEST_SESSION", "session")
-    mysql_url = os.getenv("CF_BEST_MYSQL_URL")
     DBSession = sessionmaker(bind=sqlalchemy.create_engine(mysql_url, pool_recycle=3600))
     client = TelegramClient(session=telethon_session, api_id=api_id, api_hash=api_hash).start()
 
 
     @client.on(events.NewMessage(chats="@cf_push"))
     async def handler(event):
+        logger.debug("接受消息: ".format(event.message))
         chat_id = event.message.chat.id
         message_id = event.message.id
         message_time = event.date.replace(tzinfo=pytz.utc).astimezone(pytz.timezone("Asia/Shanghai"))
         with DBSession() as db_session:
             if event.message.file is not None and event.message.file.ext == ".txt":
+                logger.debug("解析文件: {}".format(event.message))
                 file_blob = await client.download_media(event.media, bytes)
                 file_name = event.message.file.name
                 file_str = file_blob.decode('utf-8')
@@ -38,7 +42,7 @@ if __name__ == '__main__':
                             values(:chat_id,:message_id,:message_time,:type,:content,:file_name,:file_type)
                          """),
                     {
-                        'chat_id':chat_id,
+                        'chat_id': chat_id,
                         'message_id': message_id,
                         'message_time': message_time,
                         'type': 1,
@@ -72,7 +76,7 @@ if __name__ == '__main__':
                 )
                 db_session.commit()
             if event.message.raw_text is not None and event.message.raw_text.__contains__("扫描完毕"):
-                print(message_id)
+                logger.debug("扫描完毕: {}".format(event.message))
                 db_session.execute(
                     text("update telegram_message set is_latest = 1 where chat_id = :chat_id and message_id = :message_id"),
                     {

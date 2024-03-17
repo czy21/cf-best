@@ -10,6 +10,7 @@ services:
       CF_BEST_API_HASH: ${param_cf_best_api_hash}
       CF_BEST_SESSION: /home/app/data/session
       CF_BEST_MYSQL_URL: ${param_cf_best_mysql_url}
+      CF_BEST_LOG_LEVEL: ${param_cf_best_log_level}
     volumes:
       - ${param_docker_data}/cf-best-scaner/data/:/home/app/data/
     restart: always
