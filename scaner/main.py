@@ -11,7 +11,9 @@ api_id = int(os.getenv("CF_BEST_API_ID"))
 api_hash = os.getenv("CF_BEST_API_HASH")
 telethon_session = os.getenv("CF_BEST_SESSION", "session")
 mysql_url = os.getenv("CF_BEST_MYSQL_URL")
-log_level = os.getenv("CF_BEST_LOG_LEVEL", logging.INFO)
+log_level = os.getenv("CF_BEST_LOG_LEVEL")
+if not log_level:
+    log_level = logging.INFO
 
 logger = logging.getLogger('cf-best-scaner')
 ch = logging.StreamHandler()
