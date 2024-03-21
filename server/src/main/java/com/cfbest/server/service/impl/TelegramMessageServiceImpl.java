@@ -52,6 +52,7 @@ public class TelegramMessageServiceImpl implements TelegramMessageService {
         boolean isLatest = messages.stream().anyMatch(TelegramMessagePO::getIsLatest);
         if (allProcessed && isLatest) {
             cfcdnipService.copyToView(messageTimeInterval);
+            cfcdnipService.pruneCache();
         }
     }
 

@@ -1,6 +1,7 @@
 package com.cfbest.server.service.impl;
 
 import com.cfbest.server.automap.CFCDNIPAutoMap;
+import com.cfbest.server.constant.CacheConstant;
 import com.cfbest.server.feign.IpApiFeign;
 import com.cfbest.server.feign.model.IpApiBatchResult;
 import com.cfbest.server.mapper.CFCDNIPMapper;
@@ -20,17 +21,16 @@ import com.sunny.framework.core.model.SimpleItemModel;
 import com.sunny.framework.core.util.PageUtil;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DurationUtils;
 import org.apache.ibatis.cursor.Cursor;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.Period;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -47,6 +47,8 @@ public class CFCDNIPServiceImpl implements CFCDNIPService {
     CFCDNIPMapper cfcdnipMapper;
     @Autowired
     CFCDNIPAutoMap cfcdnipAutoMap;
+    @Autowired
+    StringRedisTemplate redisTemplate;
 
     @Override
     public void populateRegion(Long telegramMessageId) {
@@ -94,6 +96,7 @@ public class CFCDNIPServiceImpl implements CFCDNIPService {
         return cfcdnipAutoMap.mapToExportDTOs(cfcdnipMapper.selectListBy(query));
     }
 
+    @Cacheable(value = CacheConstant.CF_CDN_COUNTRY_TREE, unless = "#result==null")
     @Override
     public List<SimpleItemModel<String>> getCountryCityTree() {
         List<CFCDNIPPO> cfcdnippos = cfcdnipMapper.selectListGroupByCountryAndCity();
@@ -111,11 +114,13 @@ public class CFCDNIPServiceImpl implements CFCDNIPService {
         return countryTree;
     }
 
+    @Cacheable(value = CacheConstant.CF_CDN_COUNTRY_AGG, unless = "#result==null")
     @Override
     public List<CFAggCountryDTO> getAggCountry() {
         return cfcdnipMapper.selectListForAggCountry();
     }
 
+    @Cacheable(value = CacheConstant.CF_CDN_COUNTRY_DAY, unless = "#result==null")
     @Override
     public CFDayCountryDTO getDayCountry() {
         CFDayCountryDTO dto = new CFDayCountryDTO();
@@ -137,6 +142,11 @@ public class CFCDNIPServiceImpl implements CFCDNIPService {
         });
         dto.setSeries(series);
         return dto;
+    }
+
+    @Override
+    public void pruneCache() {
+        redisTemplate.delete(List.of(CacheConstant.CF_CDN_COUNTRY_TREE, CacheConstant.CF_CDN_COUNTRY_AGG, CacheConstant.CF_CDN_COUNTRY_DAY));
     }
 
     private void updateRegion(List<CFCDNIPPO> records, CFCDNIPMapper cfcdnipMapperInternal) {

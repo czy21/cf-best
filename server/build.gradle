@@ -34,5 +34,6 @@ dependencies {
     api 'com.sunny:sunny-framework-core'
     api 'com.sunny:sunny-framework-web'
     api 'com.sunny:sunny-framework-db'
+    api 'com.sunny:sunny-framework-cache'
     api 'com.sunny:sunny-framework-job'
 }

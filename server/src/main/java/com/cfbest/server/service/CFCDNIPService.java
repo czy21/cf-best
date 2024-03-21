@@ -20,4 +20,5 @@ public interface CFCDNIPService {
     List<SimpleItemModel<String>> getCountryCityTree();
     List<CFAggCountryDTO> getAggCountry();
     CFDayCountryDTO getDayCountry();
+    void pruneCache();
 }
